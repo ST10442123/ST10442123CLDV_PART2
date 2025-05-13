@@ -1,0 +1,114 @@
+﻿@model List<Booking>
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+<h2 class="text-center mb-5">List of Bookings</h2
+
+  @if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Validation Error:</strong>
+        <ul class="mb-0">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+
+
+<!-- Search Bar -->
+<form asp-controller="Bookings" asp-action="Search" method="get" class="row mb-4">
+    <div class="col-md-6">
+        <input type="text" name="searchTerm" class="form-control" placeholder="Search by Booking ID or Event Name" />
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+<!-- If a search was performed, show results above the original table -->
+@if (ViewData["SearchPerformed"] as bool? == true)
+{
+    <h4 class="mb-3">Search Results</h4>
+    if (Model != null && Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Event Name</th>
+                    <th>Venue</th>
+                    <th>Event Date</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Id</td>
+                        <td>@booking.email</td>
+                        <td>@booking.eventName</td>
+                        <td>@booking.venue</td>
+                        <td>@booking.eventDate</td>
+                        <td>@booking.createdAt.ToShortDateString()</td>
+                        <td style="white-space:nowrap">
+                            <a class="btn btn-primary btn-sm" asp-controller="Bookings" asp-action="Edit" asp-route-id="@booking.Id">Edit</a>
+                            <a class="btn btn-danger btn-sm" asp-controller="Bookings" asp-action="Delete" asp-route-id="@booking.Id" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No bookings found matching your search.</p>
+    }
+}
+
+<!-- New Booking Button -->
+<div class="row mb-4">
+    <div class="col">
+        <a class="btn btn-success" asp-controller="Bookings" asp-action="Create">New Booking</a>
+    </div>
+</div>
+
+<!-- Original Full List Table -->
+<h4 class="mb-3">All Bookings</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th>Event Name</th>
+            <th>Venue</th>
+            <th>Event Date</th>
+            <th>Created At</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in ViewBag.AllBookings as List<Booking>)
+        {
+            <tr>
+                <td>@booking.Id</td>
+                <td>@booking.email</td>
+                <td>@booking.eventName</td>
+                <td>@booking.venue</td>
+                <td>@booking.eventDate</td>
+                <td>@booking.createdAt.ToShortDateString()</td>
+                <td style="white-space:nowrap">
+                    <a class="btn btn-primary btn-sm" asp-controller="Bookings" asp-action="Edit" asp-route-id="@booking.Id">Edit</a>
+                    <a class="btn btn-danger btn-sm" asp-controller="Bookings" asp-action="Delete" asp-route-id="@booking.Id" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

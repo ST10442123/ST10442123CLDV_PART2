@@ -1,0 +1,88 @@
+﻿@model BookingDto
+@{
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto rounded border p-3">
+        <h2 class="text-center mb-5">Edit Booking</h2>
+
+
+        <form method="post" enctype="multipart/form-data">
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Id</label>
+                <div class="col-sm-8">
+                    <input class="form-control-plaintext" readonly value="@ViewData["BookingId"]">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Email</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="email">
+                    <span asp-validation-for="email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Event Name</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="eventName">
+                        <option value="Birthday Parties">Birthday Parties</option>
+                        <option value="Baby Showers">Baby Showers</option>
+                        <option value="Weddings">Weddings</option>
+                        <option value="Work Functions">Work Functions</option>
+                        <option value="Matric Farewell Parties">Matric Farewell Parties</option>
+                        <option value="Engagement Parties">Engagement Parties</option>
+                        <option value="Anniversary Celebrations">Anniversary Celebrations</option>
+                        <option value="Corporate Retreats">Corporate Retreats</option>
+                        <option value="Graduation Ceremonies">Graduation Ceremonies</option>
+                        <option value="Family Reunions">Family Reunions</option>
+                    </select>
+                    <span asp-validation-for="eventName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Venue</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="venue">
+                        <option value='Hall'>Hall</option>
+                        <option value='Lapa'>Lapa</option>
+                        <option value='Ballroom'>Ballroom</option>
+                        <option value='Barn'>Barn</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Event Date</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="eventDate">
+                    <span asp-validation-for="eventDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Created At</label>
+                <div class="col-sm-8">
+                    <input class="form-control-plaintext" readonly value="@ViewData["CreatedAt"]">
+                </div>                
+            </div>
+
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Sumbit</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-primary" asp-controller="Bookings" asp-action="Index" role="button">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
