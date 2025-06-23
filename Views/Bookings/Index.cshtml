@@ -22,13 +22,26 @@
 
 <!-- Search Bar -->
 <form asp-controller="Bookings" asp-action="Search" method="get" class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-md-3">
         <input type="text" name="searchTerm" class="form-control" placeholder="Search by Booking ID or Event Name" />
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
+        <label for="startDate" class="form-label">Start Date</label>
+        <input type="date" id="startDate" name="startDate" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label for="endDate" class="form-label">End Date</label>
+        <input type="date" id="endDate" name="endDate" class="form-control" />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
         <button type="submit" class="btn btn-primary">Search</button>
     </div>
 </form>
+
+
+
+
+
 
 <!-- If a search was performed, show results above the original table -->
 @if (ViewData["SearchPerformed"] as bool? == true)

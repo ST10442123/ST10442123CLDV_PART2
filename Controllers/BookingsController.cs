@@ -29,10 +29,19 @@ namespace EventEase3.Controllers
             return View(allBookings);
         }
 
+
+
         //public IActionResult Search(string searchTerm)
         //{
         //    var allBookings = context.Bookings.ToList();
         //    ViewBag.AllBookings = allBookings;
+        //    ViewData["SearchPerformed"] = true;
+
+        //    if (string.IsNullOrWhiteSpace(searchTerm))
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Please enter a search term.");
+        //        return View("Index", new List<Booking>());
+        //    }
 
         //    var searchResults = context.Bookings
         //        .Where(b =>
@@ -40,30 +49,77 @@ namespace EventEase3.Controllers
         //            b.eventName.ToLower().Contains(searchTerm.ToLower()))
         //        .ToList();
 
-        //    ViewData["SearchPerformed"] = true;
         //    return View("Index", searchResults);
         //}
 
-        public IActionResult Search(string searchTerm)
+        //public IActionResult Search(string searchTerm, DateTime? searchDate)
+        //{
+        //    var allBookings = context.Bookings.ToList();
+        //    ViewBag.AllBookings = allBookings;
+        //    ViewData["SearchPerformed"] = true;
+
+        //    var query = context.Bookings.AsQueryable();
+
+        //    if (!string.IsNullOrWhiteSpace(searchTerm))
+        //    {
+        //        query = query.Where(b =>
+        //            b.Id.ToString().Contains(searchTerm) ||
+        //            b.eventName.ToLower().Contains(searchTerm.ToLower()));
+        //    }
+
+        //    if (searchDate.HasValue)
+        //    {
+        //        // Convert DateTime to "dd MMMM yyyy" e.g. "15 January 2025"
+        //        string searchDateString = searchDate.Value.ToString("dd MMMM yyyy");
+        //        query = query.Where(b => b.eventDate == searchDateString);
+        //    }
+
+        //    var searchResults = query.ToList();
+
+        //    return View("Index", searchResults);
+        //}
+
+        public IActionResult Search(string searchTerm, DateTime? startDate, DateTime? endDate)
         {
             var allBookings = context.Bookings.ToList();
             ViewBag.AllBookings = allBookings;
             ViewData["SearchPerformed"] = true;
 
-            if (string.IsNullOrWhiteSpace(searchTerm))
+            // Load bookings into memory so we can parse string dates
+            var query = context.Bookings.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                ModelState.AddModelError(string.Empty, "Please enter a search term.");
-                return View("Index", new List<Booking>());
+                query = query.Where(b =>
+                    b.Id.ToString().Contains(searchTerm) ||
+                    b.eventName.ToLower().Contains(searchTerm.ToLower()));
             }
 
-            var searchResults = context.Bookings
-                .Where(b =>
-                    b.Id.ToString().Contains(searchTerm) ||
-                    b.eventName.ToLower().Contains(searchTerm.ToLower()))
-                .ToList();
+            if (startDate.HasValue || endDate.HasValue)
+            {
+                query = query.Where(b =>
+                {
+                    bool parsed = DateTime.TryParseExact(
+                        b.eventDate,
+                        "dd MMMM yyyy",
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.None,
+                        out DateTime parsedDate);
+
+                    if (!parsed) return false;
+
+                    bool afterStart = !startDate.HasValue || parsedDate.Date >= startDate.Value.Date;
+                    bool beforeEnd = !endDate.HasValue || parsedDate.Date <= endDate.Value.Date;
+
+                    return afterStart && beforeEnd;
+                });
+            }
+
+            var searchResults = query.ToList();
 
             return View("Index", searchResults);
         }
+
 
 
         public IActionResult Create()
